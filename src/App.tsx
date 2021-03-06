@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Suspense, useEffect } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { BrowserRouter as Router } from 'react-router-dom';
+import MainRoutes from './routes';
+import { auth } from 'src/services';
+import { Spin } from 'antd';
+import 'antd/dist/antd.css';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [user, loading, error] = useAuthState(auth);
+
+    useEffect(() => {
+        console.log('user!', user);
+    }, [user]);
+
+    return (
+        <div style={{ minHeight: '100vh', padding: '1rem' }}>
+            <Router>
+                <Suspense fallback={<Spin />}>
+                    <MainRoutes />
+                </Suspense>
+            </Router>
+        </div>
+    );
 }
 
 export default App;
